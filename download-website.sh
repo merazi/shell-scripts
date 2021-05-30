@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
-## the script gets a website as the input
+## This script will download a 1:1 copy of a website in your machine.
+## The script needs a website as the first input.
 
 if [ $# -eq 0 ]
 then

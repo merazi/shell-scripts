@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
 
-# this returns the battery percentage
+# this script returns the battery percentage
+# I use this for dwmblocks
+
 acpi | awk -F, '{print $2}' | xargs
