@@ -7,41 +7,40 @@ set -e
 # display a cool logo
 function show_logo_with_figlet()
 {
-    	clear
-    	figlet -c -t -k -f /usr/share/figlet/script.flf "Merazi's post install script"
+    clear
+    figlet -c -t -k -f /usr/share/figlet/script.flf "Merazi's post install script"
 }
 
 function show_logo()
 {
-    	clear
-    	echo
-    	echo
-    	echo '*   *  *****  *****  *****  *****  * |    *****'
-    	echo '** **  *      *   *  *   *     *   * |    *    '
-    	echo '* * *  ****   ***    *****    *    *      *****'
-    	echo '*   *  *      *  *   *   *   *     *          *'
-    	echo '*   *  *****  *   *  *   *  *****  *      *****'
-    	echo
-    	echo 'Post Install                             Script'
+    clear
+    echo
+    echo
+    echo '*   *  *****  *****  *****  *****  * |    *****'
+    echo '** **  *      *   *  *   *     *   * |    *    '
+    echo '* * *  ****   ***    *****    *    *      *****'
+    echo '*   *  *      *  *   *   *   *     *          *'
+    echo '*   *  *****  *   *  *   *  *****  *      *****'
+    echo
+    echo 'Post Install                             Script'
 }
 
 # some initial questions...
-read -p 'Name of the regular user account -> ' regular_user_name
 read -p 'Can I install figlet? -> ' can_install_figlet
 if [ $can_install_figlet == "yes" ]; then
-    	sudo apt install figlet --assume-yes
-    	show_logo_with_figlet
+    sudo -E apt install figlet --assume-yes
+    show_logo_with_figlet
 else
-    	echo "Ok, using plain text instead..."
-	sleep 1
-    	show_logo
+    echo "Ok, using plain text instead..."
+    sleep 1
+    show_logo
 fi
 
 # update the repository list
 # and install upgrades
 function update_and_upgrade()
 {
-    	sudo apt update --quiet && sudo apt upgrade --quiet --assume-yes
+    sudo -E apt update --quiet && sudo -E apt upgrade --quiet --assume-yes
 }
 
 # add contrib and non-free to the debian sources.list
@@ -66,7 +65,7 @@ function add_contrib_and_nonfree()
 # it expects a string with all the packages
 function install_software()
 {
-    	sudo apt install --assume-yes --quiet $*
+    sudo -E apt install --assume-yes --quiet $*
 }
 
 ###############
@@ -80,35 +79,35 @@ packages=''  # this variable will hold all my package names
 # base tools
 function software_pack_base()
 {
-    	packages+='git wget neofetch curl bash-completion dash build-essential '
-    	packages+='exa batcat zip unzip unrar mc '
+    packages+='git wget neofetch curl bash-completion dash build-essential '
+    packages+='exa bat zip unzip unrar mc '
 }
 
 # some editors
 function software_pack_editors()
 {
-    	packages+='emacs nano vim-tiny joe geany mousepad leafpad '
+    packages+='emacs nano vim-tiny joe geany mousepad leafpad '
 }
 
 # some games
 function software_pack_games()
 {
-    	packages+='supertuxkart supertux xboard kdiamond openarena doomsday '
-    	packages+='cuyo cube2 bomberclone 0ad higan warmux minetest fceux '
+    packages+='supertuxkart supertux xboard kdiamond openarena doomsday '
+    packages+='cuyo cube2 bomberclone 0ad higan warmux minetest fceux '
 }
 
 function install_qemu()
 {
-	echo 'configuring user groups for the user you entered before...'
-    	apt install qemu-kvm libvirt-bin qemu-utils virt-manager --assume-yes --quiet \
-	--install-recommends --install-suggests # give me everything!
-    	usermod -aG libvirtd,kvm,wheel $regular_user_name
+    echo 'configuring user groups for the user you entered before...'
+    sudo -E apt install qemu-kvm libvirt-bin qemu-utils virt-manager --assume-yes --quiet \
+	 --install-recommends --install-suggests # give me everything!
+    sudo -E usermod -aG libvirtd,kvm,wheel $USER
 }
 
 function install_rust()
 {
-	echo 'Using the installer from https://www.rust-lang.org/tools/install'
-	curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+    echo 'Using the installer from https://www.rust-lang.org/tools/install'
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 }
 
 echo 'adding the base utils to the package list...'
@@ -118,13 +117,13 @@ read -p 'Do you want to install editors? -> ' install_editors
 read -p 'Do you want to install games? -> ' install_games
 
 if [ $install_editors == "yes" ]; then
-	echo 'adding editors to the package list...'
-	software_pack_editors
+    echo 'adding editors to the package list...'
+    software_pack_editors
 fi
 
 if [ $install_games == "yes" ]; then
-	echo 'adding games to the package list'
-	software_pack_games
+    echo 'adding games to the package list'
+    software_pack_games
 fi
 
 # install everything!
@@ -133,10 +132,13 @@ install_software ${packages}
 # additional software configuration...
 read -p 'Do you want to install rust? -> ' do_you_want_rust
 if [ $do_you_want_rust == "yes" ]; then
-	install_rust
+    install_rust
 fi
 
 read -p 'Do you want to configure qemu and virt-manager? -> ' do_you_want_qemu
 if [ $do_you_want_qemu == "yes" ]; then
-	install_qemu
+    install_qemu
 fi
+
+# reset the sudo timeout
+sudo -K
