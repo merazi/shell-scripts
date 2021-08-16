@@ -24,7 +24,7 @@ function delete_mp3_files () {
 }
 
 function rename_files() {
-    rename '.mp3.opus' '.opus/' *
+    rename '.mp3.opus' '.opus/' ./*
 }
 
 for i in *.mp3; do
