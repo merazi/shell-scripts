@@ -20,11 +20,11 @@ function confirm_deletion () {
 }
 
 function delete_mp3_files () {
-    rm -v *.mp3
+    rm -v *.mp3;
 }
 
 function rename_files() {
-    rename '.mp3.opus' '.opus/' ./*
+    rename 's/.mp3.opus/.opus/g' ./*;
 }
 
 for i in *.mp3; do
