@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+# ye... I type “suod” more than I'd like
+
+printf "Oboy, you can't type! Let me fix that for you.\n"
+sudo "$@"
