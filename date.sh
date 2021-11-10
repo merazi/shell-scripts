@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-# this script just returns the date in dd/mm/yy format
-# I use this with dwmblocks
+# this script returns the date in a fancy way
 
-date +%d/%m/%y
+echo -n -e "$(date '+%A, %d %B %Y')"
