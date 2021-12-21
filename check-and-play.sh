@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
 # I use this script to start a headless audacious daemon
-export STATUS="pause"
+export AUDACIOUS_STATUS="paused"
 
-if [[ $STATUS == "pause" ]]; then
+if [[ $AUDACIOUS_STATUS == "paused" ]]; then
     audacious --play
-    export STATUS="play"
+    export AUDACIOUS_STATUS="playing"
 else
     audacious --pause
-    export STATUS="pause"
+    export AUDACIOUS_STATUS="pause"
 fi
