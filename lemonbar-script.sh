@@ -3,7 +3,7 @@
 Cal()
 {
     DATE=$(date "+%A, %d %B %Y - %R")
-    echo -e -n "\uf073 ${DATE}"
+    echo -e -n "${DATE}"
 }
 
 Workspace()
@@ -16,7 +16,7 @@ Workspace()
 ActiveWindow()
 {
     len=$(echo -n "$(xdotool getwindowfocus getwindowname)" | wc -m)
-    max_len=40
+    max_len=100
     if [ "$len" -gt "$max_len" ]; then
 	echo -n "$(xdotool getwindowfocus getwindowname | cut -c 1-$max_len)..."
     else
@@ -29,8 +29,18 @@ Battery()
     echo -e "$(acpi --battery | awk -F, '{gsub(/ /,""); print $2}')"
 }
 
+Vol()
+{
+  VOL=$(pulsemixer --get-volume | awk '{print $1}')
+  if [ $(pulsemixer --get-mute) -eq 1 ]; then
+    echo "Mute"
+  else
+    echo -e "$VOL"
+  fi
+}
+
 while true; do
-    echo -e "%{l}%{F#00FF00}[$(Workspace)/4] %{F-}$(ActiveWindow)" \
-	 "%{r}[$(battery.sh) | $(date.sh) | $(time.sh)]";
-    sleep 0.05s;
-done
+    echo -e "%{l}%{F#859900}[$(Workspace)/10] %{F-}$(ActiveWindow)" \
+      "%{r}[$(battery.sh) | Vol: $(Vol) | $(Cal) ]";
+    sleep 0.05;
+done 
