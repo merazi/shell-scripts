@@ -2,45 +2,56 @@
 
 Cal()
 {
-    DATE=$(date "+%A, %d %B %Y - %R")
-    echo -e -n "${DATE}"
+		DATE=$(date "+%A, %d %B %Y - %R")
+		echo -e -n "${DATE}"
 }
 
 Workspace()
 {
-    # get the current desktop number, add 1 because
-    # xdotool outputs from 0 to 9
-    echo -e "$(( $(xdotool get_desktop) + 1 ))"
+	cur=$(xprop -root _NET_CURRENT_DESKTOP | awk '{print $3}')
+	tot=$(xprop -root _NET_NUMBER_OF_DESKTOPS | awk '{print $3}')
+
+	# Desktop numbers start at 0. if you want desktop 2 to be in second place,
+	# start counting from 1 instead of 0. But wou'll lose a group ;)
+	for w in `seq 0 $((cur - 1))`; do line="${line}="; done
+
+	# enough =, let's print the current desktop
+	line="${line}|"
+
+	# En then the other groups
+	for w in `seq $((cur + 2)) $tot`; do line="${line}="; done
+
+	# don't forget to print that line!
+	echo $line
 }
 
 ActiveWindow()
 {
-    len=$(echo -n "$(xdotool getwindowfocus getwindowname)" | wc -m)
-    max_len=100
-    if [ "$len" -gt "$max_len" ]; then
-	echo -n "$(xdotool getwindowfocus getwindowname | cut -c 1-$max_len)..."
-    else
-	echo -n "$(xdotool getwindowfocus getwindowname)"
-    fi
+		len=$(echo -n "$(xdotool getwindowfocus getwindowname)" | wc -m)
+		max_len=100
+		if [ "$len" -gt "$max_len" ]; then
+			echo -n "$(xdotool getwindowfocus getwindowname | cut -c 1-$max_len)..."
+		else
+			echo -n "$(xdotool getwindowfocus getwindowname)"
+		fi
 }
 
 Battery()
 {
-    echo -e "$(acpi --battery | awk -F, '{gsub(/ /,""); print $2}')"
+		echo -e "$(acpi --battery | awk -F, '{gsub(/ /,""); print $2}')"
 }
 
 Vol()
 {
-  VOL=$(pulsemixer --get-volume | awk '{print $1}')
-  if [ $(pulsemixer --get-mute) -eq 1 ]; then
-    echo "Mute"
-  else
-    echo -e "$VOL"
-  fi
+	VOL=$(pulsemixer --get-volume | awk '{print $1}')
+	if [ $(pulsemixer --get-mute) -eq 1 ]; then
+		echo "Mute"
+	else
+		echo -e "$VOL"
+	fi
 }
 
 while true; do
-    echo -e "%{l}%{F#859900}[$(Workspace)/10] %{F-}$(ActiveWindow)" \
-      "%{r}[$(battery.sh) | Vol: $(Vol) | $(Cal) ]";
-    sleep 0.05;
+		echo -e "%{l}%{F#859900}[$(Workspace)/10] %{F-}$(ActiveWindow)" \
+			"%{r}[$(battery.sh) | Vol: $(Vol) | $(Cal) ]";
 done 
