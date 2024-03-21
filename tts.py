@@ -4,12 +4,22 @@
 # apt install mpg123
 
 from gtts import gTTS
-import os
+import sys
 
-# define variables
-s = input("Ingresa lo que quieres decir → ")
-file = "{}.ogg".format(s)
+def say_it(my_file):
+    content = my_file.read()
+    file = "{}.ogg".format(content.strip())
+    tts = gTTS(content, lang='en-GB')
+    tts.save(file)
 
-# initialize tts, create mp3 and play
-tts = gTTS(s, lang='es')
-tts.save(file)
+if len(sys.argv) > 1:
+    with open(sys.argv[1], 'r') as my_file:
+        say_it(my_file)
+else:
+    print("""
+This program is supposed to receive a file as its argument. It can be
+any file, but I suggest you use a regular txt file with no markdown
+syntax or any other kind of syntax.
+
+Example: tts.py speech.txt
+          """)
