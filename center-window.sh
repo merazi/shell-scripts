@@ -6,6 +6,6 @@ width=$(xdotool getactivewindow getwindowgeometry --shell | head -4 | tail -1 | 
 height=$(xdotool getactivewindow getwindowgeometry --shell | head -5 | tail -1 | sed 's/[^0-9]*//')
 
 newPosX=$((screenWidth/2-width/2))
-newPosY=$((screenHeight/2-height/2))
+newPosY=$((screenHeight/2-height/2-50))
 
 xdotool getactivewindow windowmove "$newPosX" "$newPosY"
