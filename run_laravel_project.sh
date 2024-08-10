@@ -12,9 +12,9 @@ echo "Installing composer deps"
 composer install;
 
 # configure artisan
-php artisan key:generate;
+#php artisan key:generate;
 php artisan migrate;
-php artisan db:seed;
+#php artisan db:seed;
 
 # finally, serve the thingy
 php artisan serve;
