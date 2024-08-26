@@ -15,8 +15,6 @@
 #       CREATED: 08/24/2024 08:42
 #===============================================================================
 
-set -o nounset                              # Treat unset variables as an error
-
 # if no directory entered then use PWD
 if [ -z "$1" ]; then
     working_directory=$PWD
